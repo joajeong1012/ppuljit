@@ -1,0 +1,20 @@
+{
+  "name": "ppuljit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "dev:pages": "wrangler pages dev dist",
+    "dev:local": "npm run build && wrangler pages dev dist",
+    "db:migrate:local": "wrangler d1 migrations apply ppuljit --local",
+    "db:migrate:remote": "wrangler d1 migrations apply ppuljit --remote"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "wrangler": "^4.151.2"
+  }
+}

@@ -1,0 +1,10 @@
+name = "ppuljit"
+compatibility_date = "2026-10-19"
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ppuljit"
+# 원격 배포 전 Cloudflare D1 생성 후 실제 ID로 교체한다.
+database_id = "dedcfaea-4c5e-4060-9b93-f5cf5a28cf59"
+migrations_dir = "migrations"
