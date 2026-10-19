@@ -25,6 +25,7 @@ export interface Account {
 
 const sessionCookie = 'ppuljit_session';
 const sessionLifetimeSeconds = 60 * 60 * 24 * 30;
+const passwordIterations = 100_000;
 
 export const json = (body: unknown, status = 200, headers = new Headers()): Response => {
   headers.set('Content-Type', 'application/json; charset=utf-8');
@@ -62,16 +63,23 @@ export async function hashPassword(password: string, salt = crypto.getRandomValu
     ['deriveBits'],
   );
   const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations: 600_000, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt, iterations: passwordIterations, hash: 'SHA-256' },
     key,
     256,
   );
-  return `pbkdf2-sha256$600000$${base64Url(salt)}$${base64Url(new Uint8Array(bits))}`;
+  return `pbkdf2-sha256$${passwordIterations}$${base64Url(salt)}$${base64Url(new Uint8Array(bits))}`;
 }
 
 export async function verifyPassword(password: string, storedHash: string): Promise<boolean> {
   const [algorithm, iterations, encodedSalt, expected] = storedHash.split('$');
-  if (algorithm !== 'pbkdf2-sha256' || iterations !== '600000' || !encodedSalt || !expected) return false;
+  if (
+    algorithm !== 'pbkdf2-sha256' ||
+    iterations !== String(passwordIterations) ||
+    !encodedSalt ||
+    !expected
+  ) {
+    return false;
+  }
 
   const salt = new Uint8Array(16);
   salt.set(fromBase64Url(encodedSalt));
